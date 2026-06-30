@@ -1,0 +1,88 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: audiobook
+      POSTGRES_USER: audiobook
+      POSTGRES_PASSWORD: audiobook
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U audiobook"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    command: >
+      mlflow server
+        --host 0.0.0.0
+        --port 5000
+        --backend-store-uri postgresql://audiobook:audiobook@postgres/mlflow
+        --default-artifact-root s3://${B2_BUCKET_NAME}
+    environment:
+      MLFLOW_S3_ENDPOINT_URL: https://s3.${B2_REGION:-us-west-004}.backblazeb2.com
+      AWS_ACCESS_KEY_ID: ${B2_APPLICATION_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${B2_APPLICATION_KEY}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+
+  langfuse:
+    image: langfuse/langfuse:latest
+    environment:
+      DATABASE_URL: postgresql://audiobook:audiobook@postgres/langfuse
+      NEXTAUTH_SECRET: local-dev-secret
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+
+  tempo:
+    image: grafana/tempo:latest
+    ports:
+      - "3200:3200"
+      - "4317:4317"   # OTLP gRPC — API/Worker send traces here
+
+volumes:
+  postgres_data:
+  grafana_data:

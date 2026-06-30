@@ -1,0 +1,4 @@
+# gitkeep — datasets directory
+# Store benchmark books, evaluation datasets, and test manuscripts here.
+# Changes to dataset content must generate a new dataset version.
+# See AGENTS.md §Dataset Versioning.

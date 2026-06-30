@@ -1,0 +1,20 @@
+# Experiment: Baseline Kokoro v1
+# Paragraph chunker + Kokoro default voice, no LLM enrichment.
+# This is the reference baseline all future experiments compare against.
+
+name: baseline-kokoro-v1
+description: "Paragraph chunker + Kokoro af_bella voice, no LLM enrichment"
+
+pipeline_config:
+  pdf_parser: docling
+  ocr_backend: rapidocr
+  chunker: paragraph
+  chunk_max_chars: 800
+  tts_provider: kokoro
+  tts_voice: af_bella
+  tts_speed: 1.0
+  llm_model: none
+  llm_orchestration: none
+  sentence_detector: spacy
+  g2p_backend: espeak
+  dsp_preset: default

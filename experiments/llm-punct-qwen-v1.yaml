@@ -1,0 +1,20 @@
+# Experiment: LLM Punctuation Restoration
+# Adds Qwen2.5-0.5b punctuation restoration before chunking.
+# Compare against baseline-kokoro-v1 on the same dataset version.
+
+name: llm-punct-qwen-v1
+description: "Paragraph chunker + Kokoro + Qwen2.5:0.5b punctuation restoration (Tier 1)"
+
+pipeline_config:
+  pdf_parser: docling
+  ocr_backend: rapidocr
+  chunker: paragraph
+  chunk_max_chars: 800
+  tts_provider: kokoro
+  tts_voice: af_bella
+  tts_speed: 1.0
+  llm_model: qwen2.5:0.5b
+  llm_orchestration: langgraph
+  sentence_detector: spacy
+  g2p_backend: espeak
+  dsp_preset: default

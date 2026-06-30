@@ -1,0 +1,37 @@
+# API
+fastapi>=0.111
+uvicorn[standard]>=0.30
+sqlalchemy[asyncio]>=2.0
+asyncpg>=0.29
+alembic>=1.13
+redis[hiredis]>=5.0
+opentelemetry-sdk>=1.25
+opentelemetry-exporter-otlp-proto-grpc>=1.25
+opentelemetry-instrumentation-fastapi>=0.46b0
+python-multipart>=0.0.9
+httpx>=0.27          # async MLflow health check at startup
+
+# Worker
+celery[redis]>=5.4
+
+# LLMOps
+streamlit>=1.35
+
+# Shared
+pydantic>=2.7
+pydantic-settings>=2.3
+boto3>=1.34
+structlog>=24.1
+pyyaml>=6.0
+mlflow>=2.13
+
+# Parsers (AUD-021/022/023)
+docling>=2.0
+rapidocr-onnxruntime>=1.3
+pymupdf>=1.24        # rasterisation for RapidOCR; also PyMuPDFParser (AGPL — internal only)
+pdfplumber>=0.11     # PDFPlumberParser (stub — AUD-021)
+pypdf>=4.0           # PyPDFParser (stub — AUD-021)
+python-docx>=1.1     # DocxParser (stub — AUD-021)
+
+# Sync DB driver for Celery workers (AUD-011)
+psycopg2-binary>=2.9

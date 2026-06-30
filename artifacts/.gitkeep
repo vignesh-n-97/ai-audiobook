@@ -1,0 +1,3 @@
+# gitkeep — artifacts directory
+# Stores versioned model and audio artifacts.
+# Large binaries (*.bin, *.onnx, *.gguf) should be stored in B2, not git.
